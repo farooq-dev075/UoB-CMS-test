@@ -4,6 +4,9 @@ class PersonProfile < ApplicationRecord
   # Person Profile Image using Active Storage
   has_one_attached :image
 
+  # Person Profile having many team profiles
+  has_and_belongs_to_many :team_profiles
+
   # Validate presence
   validates :subtype, :role_holder_name, presence: true
   validates :supervisor_availability, presence: true, unless: -> { subtype == 'academic_profile' }
@@ -38,11 +41,11 @@ class PersonProfile < ApplicationRecord
                                   proposals: 2,
                                   not_applicable: 3 }
 
+  private
+
   def valid_subtypes
     %w(academic_profile staff_profile leadership_profile)
   end
-
-  private
 
   def image_content_type
     return unless image.attached?

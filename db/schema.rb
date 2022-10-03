@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_10_03_070207) do
+ActiveRecord::Schema.define(version: 2022_10_03_075739) do
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -64,6 +64,28 @@ ActiveRecord::Schema.define(version: 2022_10_03_070207) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "person_profiles_team_profiles", force: :cascade do |t|
+    t.integer "person_profile_id", null: false
+    t.integer "team_profile_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["person_profile_id"], name: "index_person_profiles_team_profiles_on_person_profile_id"
+    t.index ["team_profile_id"], name: "index_person_profiles_team_profiles_on_team_profile_id"
+  end
+
+  create_table "team_profiles", force: :cascade do |t|
+    t.string "title", null: false
+    t.text "summary", default: "", null: false
+    t.string "subtype", default: "", null: false
+    t.string "contact_name", default: "", null: false
+    t.string "contact_email", default: "", null: false
+    t.string "contact_phone", default: "", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "person_profiles_team_profiles", "person_profiles"
+  add_foreign_key "person_profiles_team_profiles", "team_profiles"
 end
