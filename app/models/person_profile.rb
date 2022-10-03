@@ -1,4 +1,9 @@
 class PersonProfile < ApplicationRecord
+  VALID_IMAGE_FORMATS = %w(image/gif image/png image/jpg image/jpeg)
+
+  # Person Profile Image using Active Storage
+  has_one_attached :image
+
   # Validate presence
   validates :subtype, :role_holder_name, presence: true
   validates :supervisor_availability, presence: true, unless: -> { subtype == 'academic_profile' }
@@ -25,6 +30,9 @@ class PersonProfile < ApplicationRecord
   validates :person_finder_link, :all_publications_url, :pure_portal_url, length: { maximum: 1_000 }, allow_blank: true
   validates :pure_portal_url, format: { with: %r{https?://researchportal\.bath\.ac\.uk.*}, allow_blank: true }
 
+  # Validate image type
+  validate :image_content_type
+
   enum supervisor_availability: { available: 0,
                                   unavailable: 1,
                                   proposals: 2,
@@ -32,5 +40,15 @@ class PersonProfile < ApplicationRecord
 
   def valid_subtypes
     %w(academic_profile staff_profile leadership_profile)
+  end
+
+  private
+
+  def image_content_type
+    return unless image.attached?
+
+    if VALID_IMAGE_FORMATS.exclude?(image.content_type)
+      errors.add(:image, "Valid Image types are #{VALID_IMAGE_FORMATS.join(', ')}")
+    end
   end
 end
